@@ -38,6 +38,7 @@ Step 2:
 
 Step 3:
     Lookup the emoji for each digram
+
     ```
     "he" = 📿
     "ll" = 🤘  
