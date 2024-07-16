@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>digremoji</title>
+
+
+    <style>
+        body{
+            font-family: sans-serif;
+        }
+        body * {
+            margin: 6px;
+        }
+        p{
+            font-size: 1.2em;
+        }
+
+        button{
+            padding: 10px;
+            font-size: 1.4em;
+        }
+        textarea {
+            width: 90%;
+            height: 180px;
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+<h1>Digremoji</h1>
+<p>A digraphic substitution cipher</p>
+<textarea id="messageInput" placeholder="Plain Text Message"></textarea>
+<br>
+<button id="encodeBtn">Encode</button>
+<button id="decodeBtn">Decode</button>
+<br>
+<textarea id="outputText" placeholder="Digremoji Cipher Text"></textarea>
+
+
+<script>
+    const chunk = (arr, size) =>
+        Array.from({length: Math.ceil(arr.length / size)}, (v, i) =>
+            arr.slice(i * size, i * size + size)
+        );
+
+
+    function splitmix32(a) {
+        return function () {
+            a |= 0;
+            a = a + 0x9e3779b9 | 0;
+            let t = a ^ a >>> 16;
+            t = Math.imul(t, 0x21f0aaad);
+            t = t ^ t >>> 15;
+            t = Math.imul(t, 0x735a2d97);
+            return ((t = t ^ t >>> 15) >>> 0) / 4294967296;
+        }
+    }
+
+    //const prng = splitmix32((Math.random() * 2 ** 32) >>> 0)
+    const prng = splitmix32(0)
+    //for (let i = 0; i < 10; i++) console.log(prng());
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    let $encodeBtn = document.querySelector("#encodeBtn");
+    let $decodeBtn = document.querySelector("#decodeBtn");
+    let $messageInput = document.querySelector("#messageInput");
+    let $outputText = document.querySelector("#outputText");
+
+
+    const englishAlphabetStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+    const emojiAlphabetStr = "🍮🚣🚝🛶😺📢🚁😕🚩🛑🍣😌🕡🏥🖤📋💳💀😤👍🍈🕔🔺💫🎈🎇📡👀💐🍖🔩📥🍀🐷😘🙊💭😃🛁🍱🚭😭🍓🍞🏉🔈🛖💟🚛🤥📓🏫👼🛹💪🎂🕐😞🍪🎮🍍📵🍉🚇🔏😦🔄💁📦😥😄🚏📺👊🎵🙃💋👜😯😍🐢🕒🕑📉👸📝💩🚼🔢🐘💓🎥🐍👳🚯🌹🎷🚥🌀🔬🔐🌟🔁🐸😬🤡🍤🍕😅🐒🏣😙👖🚫🏈😫🏩🏢🏇🎳🐃🚒🚌💄🛻🎢😰👵🔝😈👿🔂🌅😽🙋🐅🏹🚄🏯🙄🐞🗿📄🔠💎📴🙂🎶🔘🚰🚘📍🏺💊💹🎯🚸🍶🏬📸💼🛃🔱🎲🔭👲🌜🏒😪🏀🌋🤗👐📕🐱🍾🐮🔅🕧💉💝💌😚🐩😉🟰🐦📳🍴🔗👪📶📂📿💧🚀📻👧📔😋💚😹🍬👾🍷🚿🐨🛟🔴🐹🍜🐠🎪🙆🛄🍳🎦🐕🍥💘💥🌙📷🍻😝👋🍌👚📁🚳📬🐼🌏🍢🔓🍅💺😎🛕🏅🐎💻🚽📤🖖🏏👇🎑😧🌎😊🔵🔃🚲💖🚟🤔💈🍂🚡🏑📮🤠🌖🍨🏭😴🎴🍃🔒🎆🏃🐡🗾🌴👓🗽🐰🍰🤞🚵📰🙅😜🚑💅🔙🕙🐯👯🎎📙👦😁😡🕤🚤🐇🎉🐴🤒🐓🤟🚬🚋🚐🛝🔣🤘🔀🤜🤐🐾🚾💨🐑🍸📐🎻🌈🤏📲🐭👂💯👨🔷🎸🏂🍦👹🗻📧🐂👫🐥🛗🎹🐏🍏👕📞🎨🤍🚎🎧🛐🔻👻🚦💴🐉🕺🐤📃🐧💸📅🎺🌂🔋🔫🛷🔚🌾🌠🍿😔🍗🕎🕋🚢😩🐌👈📣👣🔪🔤📭🚈🎁🐟🔍📆🕟🐲🕚🌃🐙🎏🔜😓🐵💱👔🐪💤🍠🚴🔖🛫👢🙏🐬👄👑📒👏💍💣💾🏪🎍😳👆📘🏰😷🍇👘🕕🌘🏮🎭🤣🌍💬🕍🍒📖🍔🚍🍫😶📟🛜🍎📑👌📹🙈💲🐫🛸🎐🌑🙇🕣👮🍺🏡📌🤚🍼🕦🍲🎄🚉🍙🔰🚗🔨🎓🍭😏🚜📚🎾🍧🌲🍁😆📏🎒🎡🏐🏧😐🍹🤤🔛🙎🔟👒🚊😿💃💵🏤😟🤓🏄🔮💔🔲🌳🐗😛📯💏🕜🔌🐔🏁📪🛀🐳🤝💛🗼💜💰👬🐊🍆👥🚮👃🎊💇🛌🚺💦🍘🍐🛵🍑💮🔕📼😣🎀🕖👶🚹🤎👗📊🔧😒😻😸💢🔼🔦🎩🌕😮🏸🌰🍯🍩📛🎿💷📗🛬🛴📠😇🎠💒😠🔽🚖🚻🌒🌗👤💞👷🌐👟👴🤢🌻🐶🍄📜🚂🎼🕠👰🐆💂🌷📩🚓🌓🎌🎤🌯👭👡🚞🌝🙁🐛🖕🎅🍝🔯🤑🕥🚃🤖🌸🌊💶🐜🏨🏠🛂🤛🕓🔉🚪🍟🕝🌺🎬🌽🌌👠🚔🎣👩📎🔸🛼🌱😢🐻👙😵🕛🌄🕌📨🚶👎🐄🙀🌼👛🌿💗🎰🌔🌮😗🔶📇🕞🎋🚧🔆🍡🐚🙌🌚🚠🚅🍊🚙🔑🚷😾👅🔹🌛😱👱🛒🐖💙📀🔥🤌🎱🛞🌉😀🎃👉🕗🌆🔡🚱🔞🐝💑🔊🐽💆🎫🤕🐈💕🌁🐁🐣🏓🔎🤙🌇🛺📈😑🚆😖🍛📫🏆🏴🚨👞🛅🐐🎽🕘🙍🌭🙉🌵🔳😲😼🏊🍚💠💽🍋👺🐋💿🔇👝🚕💡🌞📱🐺👽🚚🏦😂🕢😨";
+    let emojiAlphabetList = chunk(emojiAlphabetStr, 2);
+    let emojiMap = {}
+
+
+    function buildMap(alphabetList) {
+        emojiMap = {};
+        let curEmojiIndex = 0
+        for (let firstIndex = 0; firstIndex < englishAlphabetStr.length; firstIndex++) {
+            for (let secondIndex = 0; secondIndex < englishAlphabetStr.length; secondIndex++) {
+                emojiMap[englishAlphabetStr[firstIndex] + englishAlphabetStr[secondIndex]] = alphabetList[curEmojiIndex];
+                emojiMap[alphabetList[curEmojiIndex]] = englishAlphabetStr[firstIndex] + englishAlphabetStr[secondIndex];
+                curEmojiIndex++;
+            }
+        }
+    }
+
+    function encrypt(plainText) {
+        cipherTextList = [];
+        plainTextList = plainText.split("");
+        if (plainTextList.length % 2 == 1) {
+            plainTextList.push(" ");
+        }
+
+        buildMap(emojiAlphabetList);
+        //console.log(emojiMap);
+
+        let plainTextDigrams = chunk(plainTextList, 2);
+        for (let i = 0; i < plainTextDigrams.length; i++) {
+            const curDigram = plainTextDigrams[i].join("");
+            //console.log("cur digram: " + curDigram);
+            cipherTextList.push(emojiMap[curDigram])
+        }
+
+        return cipherTextList.join("");
+    }
+
+    function decrypt(cipherText) {
+        cipherTextList = chunk(cipherText, 2);
+        plainTextList = []
+
+        buildMap(emojiAlphabetList);
+
+        for (let i = 0; i < cipherTextList.length; i++) {
+            const curDigram = emojiMap[cipherTextList[i]]
+            //console.log("cur digram: " + curDigram);
+            plainTextList.push(curDigram)
+        }
+
+        return plainTextList.join("");
+    }
+
+
+    $encodeBtn.addEventListener("click", function (event) {
+        $outputText.value = encrypt($messageInput.value.toUpperCase());
+    });
+    $decodeBtn.addEventListener("click", function (event) {
+        $messageInput.value = decrypt($outputText.value).toLocaleLowerCase();
+    });
+
+</script>
+</body>
+</html>
