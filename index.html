@@ -6,20 +6,23 @@
 
 
     <style>
-        body{
+        body {
             font-family: sans-serif;
         }
+
         body * {
             margin: 6px;
         }
-        p{
+
+        p {
             font-size: 1.2em;
         }
 
-        button{
+        button, input, label {
             padding: 10px;
             font-size: 1.4em;
         }
+
         textarea {
             width: 90%;
             height: 180px;
@@ -29,11 +32,15 @@
 </head>
 <body>
 <h1>Digremoji</h1>
-<p>A digraphic substitution cipher. <a href="https://github.com/FoamyGuy/Digremoji_Page/blob/main/README.md">Learn More</a></p>
+<p>A digraphic substitution cipher. <a href="https://github.com/FoamyGuy/Digremoji_Page/blob/main/README.md">Learn
+    More</a></p>
 <textarea id="messageInput" placeholder="Plain Text Message"></textarea>
 <br>
-<button id="encodeBtn">Encode</button>
-<button id="decodeBtn">Decode</button>
+<button id="encodeBtn" title="Encode">TXT -&gt; 😀</button>
+<button id="decodeBtn" title="Decode">😀 -&gt; TXT</button>
+<label title="seed">🌱 : </label><input id="seedInput" title="seed" type="number" value="0">
+<button title="Random seed" id="shuffleBtn">🎲🔑</button>
+
 <br>
 <textarea id="outputText" placeholder="Digremoji Cipher Text"></textarea>
 
@@ -45,39 +52,69 @@
         );
 
 
-    function splitmix32(a) {
-        return function () {
-            a |= 0;
-            a = a + 0x9e3779b9 | 0;
-            let t = a ^ a >>> 16;
-            t = Math.imul(t, 0x21f0aaad);
-            t = t ^ t >>> 15;
-            t = Math.imul(t, 0x735a2d97);
-            return ((t = t ^ t >>> 15) >>> 0) / 4294967296;
+    function shuffleArray(array, seed) {
+
+        console.log("inside shuffle seed is: " + seed);
+
+        function splitmix32(a) {
+            return function () {
+                a |= 0;
+                a = a + 0x9e3779b9 | 0;
+                let t = a ^ a >>> 16;
+                t = Math.imul(t, 0x21f0aaad);
+                t = t ^ t >>> 15;
+                t = Math.imul(t, 0x735a2d97);
+                return ((t = t ^ t >>> 15) >>> 0) / 4294967296;
+            }
         }
-    }
 
-    //const prng = splitmix32((Math.random() * 2 ** 32) >>> 0)
-    const prng = splitmix32(0)
-    //for (let i = 0; i < 10; i++) console.log(prng());
+        const prng = splitmix32(seed);
 
-    function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            const j = Math.floor(prng() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
+
 
     let $encodeBtn = document.querySelector("#encodeBtn");
     let $decodeBtn = document.querySelector("#decodeBtn");
     let $messageInput = document.querySelector("#messageInput");
     let $outputText = document.querySelector("#outputText");
+    let $seedInput = document.querySelector("#seedInput");
+    let $shuffleBtn = document.querySelector("#shuffleBtn");
 
 
     const englishAlphabetStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
     const emojiAlphabetStr = "🍮🚣🚝🛶😺📢🚁😕🚩🛑🍣😌🕡🏥🖤📋💳💀😤👍🍈🕔🔺💫🎈🎇📡👀💐🍖🔩📥🍀🐷😘🙊💭😃🛁🍱🚭😭🍓🍞🏉🔈🛖💟🚛🤥📓🏫👼🛹💪🎂🕐😞🍪🎮🍍📵🍉🚇🔏😦🔄💁📦😥😄🚏📺👊🎵🙃💋👜😯😍🐢🕒🕑📉👸📝💩🚼🔢🐘💓🎥🐍👳🚯🌹🎷🚥🌀🔬🔐🌟🔁🐸😬🤡🍤🍕😅🐒🏣😙👖🚫🏈😫🏩🏢🏇🎳🐃🚒🚌💄🛻🎢😰👵🔝😈👿🔂🌅😽🙋🐅🏹🚄🏯🙄🐞🗿📄🔠💎📴🙂🎶🔘🚰🚘📍🏺💊💹🎯🚸🍶🏬📸💼🛃🔱🎲🔭👲🌜🏒😪🏀🌋🤗👐📕🐱🍾🐮🔅🕧💉💝💌😚🐩😉🟰🐦📳🍴🔗👪📶📂📿💧🚀📻👧📔😋💚😹🍬👾🍷🚿🐨🛟🔴🐹🍜🐠🎪🙆🛄🍳🎦🐕🍥💘💥🌙📷🍻😝👋🍌👚📁🚳📬🐼🌏🍢🔓🍅💺😎🛕🏅🐎💻🚽📤🖖🏏👇🎑😧🌎😊🔵🔃🚲💖🚟🤔💈🍂🚡🏑📮🤠🌖🍨🏭😴🎴🍃🔒🎆🏃🐡🗾🌴👓🗽🐰🍰🤞🚵📰🙅😜🚑💅🔙🕙🐯👯🎎📙👦😁😡🕤🚤🐇🎉🐴🤒🐓🤟🚬🚋🚐🛝🔣🤘🔀🤜🤐🐾🚾💨🐑🍸📐🎻🌈🤏📲🐭👂💯👨🔷🎸🏂🍦👹🗻📧🐂👫🐥🛗🎹🐏🍏👕📞🎨🤍🚎🎧🛐🔻👻🚦💴🐉🕺🐤📃🐧💸📅🎺🌂🔋🔫🛷🔚🌾🌠🍿😔🍗🕎🕋🚢😩🐌👈📣👣🔪🔤📭🚈🎁🐟🔍📆🕟🐲🕚🌃🐙🎏🔜😓🐵💱👔🐪💤🍠🚴🔖🛫👢🙏🐬👄👑📒👏💍💣💾🏪🎍😳👆📘🏰😷🍇👘🕕🌘🏮🎭🤣🌍💬🕍🍒📖🍔🚍🍫😶📟🛜🍎📑👌📹🙈💲🐫🛸🎐🌑🙇🕣👮🍺🏡📌🤚🍼🕦🍲🎄🚉🍙🔰🚗🔨🎓🍭😏🚜📚🎾🍧🌲🍁😆📏🎒🎡🏐🏧😐🍹🤤🔛🙎🔟👒🚊😿💃💵🏤😟🤓🏄🔮💔🔲🌳🐗😛📯💏🕜🔌🐔🏁📪🛀🐳🤝💛🗼💜💰👬🐊🍆👥🚮👃🎊💇🛌🚺💦🍘🍐🛵🍑💮🔕📼😣🎀🕖👶🚹🤎👗📊🔧😒😻😸💢🔼🔦🎩🌕😮🏸🌰🍯🍩📛🎿💷📗🛬🛴📠😇🎠💒😠🔽🚖🚻🌒🌗👤💞👷🌐👟👴🤢🌻🐶🍄📜🚂🎼🕠👰🐆💂🌷📩🚓🌓🎌🎤🌯👭👡🚞🌝🙁🐛🖕🎅🍝🔯🤑🕥🚃🤖🌸🌊💶🐜🏨🏠🛂🤛🕓🔉🚪🍟🕝🌺🎬🌽🌌👠🚔🎣👩📎🔸🛼🌱😢🐻👙😵🕛🌄🕌📨🚶👎🐄🙀🌼👛🌿💗🎰🌔🌮😗🔶📇🕞🎋🚧🔆🍡🐚🙌🌚🚠🚅🍊🚙🔑🚷😾👅🔹🌛😱👱🛒🐖💙📀🔥🤌🎱🛞🌉😀🎃👉🕗🌆🔡🚱🔞🐝💑🔊🐽💆🎫🤕🐈💕🌁🐁🐣🏓🔎🤙🌇🛺📈😑🚆😖🍛📫🏆🏴🚨👞🛅🐐🎽🕘🙍🌭🙉🌵🔳😲😼🏊🍚💠💽🍋👺🐋💿🔇👝🚕💡🌞📱🐺👽🚚🏦😂🕢😨";
     let emojiAlphabetList = chunk(emojiAlphabetStr, 2);
     let emojiMap = {}
+
+    $shuffleBtn.addEventListener("click", function (event) {
+        $seedInput.value = (Math.random() * 2 ** 32) >>> 0
+        emojiAlphabetList = chunk(emojiAlphabetStr, 2);
+        shuffleArray(emojiAlphabetList, parseInt($seedInput.value));
+        $encodeBtn.click();
+    });
+
+    $seedInput.addEventListener("blur", function (event) {
+        console.log("seed input blur");
+    });
+
+    $seedInput.addEventListener("change", function (event) {
+        console.log("seed input change");
+        if ($seedInput.value === "0") {
+            emojiAlphabetList = chunk(emojiAlphabetStr, 2);
+            //$encodeBtn.click();
+        } else {
+            emojiAlphabetList = chunk(emojiAlphabetStr, 2);
+            shuffleArray(emojiAlphabetList, parseInt($seedInput.value));
+            if ($messageInput.value !== "") {
+                $encodeBtn.click();
+            }
+
+        }
+    })
 
 
     function buildMap(alphabetList) {
@@ -133,6 +170,18 @@
     });
     $decodeBtn.addEventListener("click", function (event) {
         $messageInput.value = decrypt($outputText.value).toLocaleLowerCase();
+    });
+
+    $messageInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            $encodeBtn.click();
+        }
+    });
+
+    $outputText.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            $decodeBtn.click();
+        }
     });
 
 </script>
