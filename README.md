@@ -2,6 +2,8 @@
 
 Pronounced:  Die - Grim - oji
 
+[Live Demo](https://foamyguy.github.io/Digremoji_Page/)
+
 ### What is it?
 
 A simple digraphical substitution cipher. It encodes text by mapping every possible pair of letters to a specific emoji.
